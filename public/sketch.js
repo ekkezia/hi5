@@ -62,15 +62,15 @@ function setup() {
         otherHandEl.elt.className = 'available';
       }
     }
-    console.log(
-      'draw hands 🤟',
-      currentId,
-      'myHands',
-      myHands,
-      'otherhands',
-      Object.entries(otherHands),
-      // Object.entries(otherHands)[0][1],
-    );
+    // console.log(
+    //   'draw hands 🤟',
+    //   currentId,
+    //   'myHands',
+    //   myHands,
+    //   'otherhands',
+    //   Object.entries(otherHands),
+    //   // Object.entries(otherHands)[0][1],
+    // );
 
     // only allow instruction to work when person hasnt finished the hi5 procedure
     if (!hasFinishedHighfiving) {
@@ -151,12 +151,14 @@ function setup() {
   // start detecting hands from the webcam video
   handPose.detectStart(video, gotHands);
 
-  let restartBtn = select('#restart');
-  restartBtn.mousePressed(clickRestartBtn);
-}
+  let restartBtn = document.getElementById('restart');
+  console.log(restartBtn); // Should not be null
 
-function mousePressed() {
-  console.log(otherHands);
+  if (restartBtn) {
+    restartBtn.addEventListener('click', clickRestartBtn);
+  } else {
+    console.warn('#restart button not found in DOM');
+  }
 }
 
 let s = 0;
@@ -194,7 +196,7 @@ function draw() {
     }
   }
 
-  // Draw other clients' hands (red)
+  // Draw other clients' hands (cyan)
   for (let clientId in otherHands) {
     if (clientId !== socket.id) {
       // Don't draw your own hand again
@@ -203,7 +205,7 @@ function draw() {
         let hand = clientHands[i];
         for (let j = 0; j < hand.keypoints.length; j++) {
           let keypoint = hand.keypoints[j];
-          fill(255, 0, 0); // Red for other clients' hands
+          fill(0, 255, 255); // Red for other clients' hands
           noStroke();
           ellipse(keypoint.x, keypoint.y, handPointSize, handPointSize);
         }
@@ -455,6 +457,7 @@ function updateImageContainer(base64Image, senderId) {
 }
 
 function clickRestartBtn() {
+  console.log('click restart');
   hasFinishedHighfiving = false;
 
   let imageEl = select('#imageContainer');
@@ -464,7 +467,7 @@ function clickRestartBtn() {
     imageEl.elt.classList = '';
   }
 
-  if (restartEl.elt.classList.contains('available')) {
+  if (restartEl.elt.classList.contains('show')) {
     restartEl.elt.classList = '';
   }
 }

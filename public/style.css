@@ -8,6 +8,8 @@
   --secondary-color: #00ff00;
   --text: #ff00ff;
   --text-light: #ffffff;
+  --you: #00ff00;
+  --them: #00ffff;
 }
 
 /* Global Reset and Base Styles */
@@ -105,6 +107,14 @@ body.modelReady #status {
   transition: opacity 0.5s;
 }
 
+#hand-1, #hand-1-wait,  #hand-1-wait + span{
+  -webkit-text-fill-color: var(--you);
+  -webkit-text-stroke: 1px var(--text);
+}
+#hand-2, #hand-2-wait, #hand-2-wait + span {
+  -webkit-text-fill-color: var(--them);
+  -webkit-text-stroke: 1px var(--text);
+}
 #hand-1.available, #hand-2.available {
   opacity: 1;
 }
@@ -143,14 +153,25 @@ body.modelReady #status {
   height: 100%;
 }
 #restart {
+  background: var(--text);
+  padding: 0 0.5rem;
   cursor: pointer;
-  &:hover {
-    color: var(--text);
-  }
-  display: none !important;
+  color: var(--text);
+  opacity: 0;
+  border: 1px solid var(--text);
+  z-index: 99;
+  position: relative;
+  pointer-events: none;
+  font-family: inherit;
+}
+#restart:hover {
+  background: none;
+  color: var(--text-light);
 }
 #restart.show {
-  display: block !important;
+  opacity: 1;
+  pointer-events: auto;
+  /* display: block !important; */
 }
 
 #instructionContainer, #loadingContainer {
@@ -159,6 +180,7 @@ body.modelReady #status {
   left: 50%;
   transform: translate(-50%, -50%);
   transition: 2s;
+  pointer-events: none;
 }
 #loadingContainer {
   display: block;
