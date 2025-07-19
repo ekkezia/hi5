@@ -23,7 +23,133 @@
   </head>
 
   <body>
-    <p id="status">Loading model...</p>
+    <video id="webcam" autoplay muted playsinline></video>
+
+    <script>
+      const vidBg = document.getElementById('webcam');
+
+      navigator.mediaDevices
+        .getUserMedia({ video: true, audio: false })
+        .then((stream) => {
+          vidBg.srcObject = stream;
+        })
+        .catch((err) => {
+          console.error('Error accessing webcam:', err);
+        });
+    </script>
+
+    <div id="credits">
+      <span
+        data-tooltip="Raise your hand to start! If someone nearby joins in, their hand will light up too. Follow the prompts to move closer and align your hands. Once your high five connects, hold it — who knows where it might lead? 💫
+
+      "
+        >Hi5?</span
+      >
+
+      <a href="https://klogs.e-kezia.com" target="_blank">@ekezia</a>
+    </div>
+
+    <div id="handCount">
+      <div>
+        <span id="hand-2-wait">Awaiting for</span>
+        <span id="">Them</span>
+        <span id="hand-2">✋🏼</span>
+      </div>
+      <div id="restart">Restart</div>
+      <div>
+        <span id="hand-1">🤚</span>
+        <span id="hand-1-wait">Awaiting for</span>
+        <span id="">You</span>
+      </div>
+    </div>
+
+    <!-- Loading Circle -->
+    <div id="loadingCircle">
+      <svg
+        width="360"
+        height="360"
+        viewBox="0 0 360 360"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <!-- Background circle -->
+        <circle cx="180" cy="180" r="180" fill="#ffffff" />
+      </svg>
+    </div>
+    <!-- Loading -->
+    <div id="loadingContainer">
+      <div id="loading">
+        <svg
+          width="360"
+          height="360"
+          viewBox="0 0 360 360"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <!-- Background circle -->
+          <circle cx="180" cy="180" r="180" fill="transparent" />
+
+          <!-- Define circular path -->
+          <defs>
+            <path
+              id="textCircleLoading"
+              d="M180,180 m-140,0 a140,140 0 1,1 280,0 a140,140 0 1,1 -280,0"
+              fill="none"
+            />
+          </defs>
+
+          <!-- Text on path -->
+          <text
+            font-size="18"
+            fill="#ffffff"
+            stroke="#ff00ff"
+            stroke-weight="0.5"
+            font-family="Monospace', mono"
+          >
+            <textPath href="#textCircleLoading" startOffset="0%">
+              Loading
+            </textPath>
+          </text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Image Container -->
+    <div id="imageContainer"></div>
+    <!-- Circular Instruction -->
+    <div id="instructionContainer">
+      <div id="instruction">
+        <svg
+          width="360"
+          height="360"
+          viewBox="0 0 360 360"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <!-- Background circle -->
+          <circle cx="180" cy="180" r="180" fill="transparent" />
+
+          <!-- Define circular path -->
+          <defs>
+            <path
+              id="textCircle"
+              d="M180,180 m-140,0 a140,140 0 1,1 280,0 a140,140 0 1,1 -280,0"
+              fill="none"
+            />
+          </defs>
+
+          <!-- Text on path -->
+          <text font-size="18" fill="none" stroke="#ffffff" stroke-width="0.5">
+            <textPath href="#textCircle" startOffset="0%">Hands up</textPath>
+            <textPath href="#textCircle" startOffset="25%">Wait...</textPath>
+            <textPath href="#textCircle" startOffset="40%">
+              Move closer to the other hand
+            </textPath>
+            <textPath href="#textCircle" startOffset="75%">
+              Romantic! Hold it...
+            </textPath>
+          </text>
+        </svg>
+      </div>
+    </div>
+
     <script src="sketch.js"></script>
   </body>
 </html>

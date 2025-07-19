@@ -1,9 +1,281 @@
 /* Hi5 - Hand Tracking Application */
 
-html, body {
+/* Import Rubik Bubbles font */
+@import url('https://fonts.googleapis.com/css2?family=Rubik+Bubbles&display=swap');
+
+:root {
+  --primary-color: #ffff00;
+  --secondary-color: #00ff00;
+  --text: #ff00ff;
+  --text-light: #ffffff;
+}
+
+/* Global Reset and Base Styles */
+* {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
+
+body, html {
+  min-height: 100vh;
+  font-family: "Rubik Bubbles", sans-serif;
+  background: var(--primary-color);
+  color: var(--text);
+  -webkit-text-fill-color: white; /* Will override color (regardless of order) */
+  -webkit-text-stroke: 1px var(--text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  overflow-x: hidden;
+}
+
+body {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+canvas, #status {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 canvas {
   display: block;
+  clip-path: circle(0% at 50% 50%);
+  transform: translate(-50%, -50%) scaleX(-1);
+  z-index: 1;
 }
+
+body.modelReady canvas {
+  clip-path: circle(35% at 50% 50%);
+  transition: clip-path 1s 1s;
+}
+
+.slackey-regular {
+  font-family: "Slackey", sans-serif;
+}
+
+.rubik-bubbles-regular {
+  font-family: "Rubik Bubbles", system-ui;
+}
+
+
+#circleCanvas, #p5_loading {
+  width: 200px;
+  height: 200px;
+  clip-path: circle(50% at 50% 50%);
+  -webkit-clip-path: circle(50% at 50% 50%);
+  overflow: hidden;
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  transform: translate(-50%,-50%);
+}
+
+
+body.modelReady #status {
+  clip-path: circle(0% at 50% 50%);
+  transition: clip-path 1s;
+}
+
+#handCount, #handCount div, #handCount-wait, #hand-1-wait, #hand-2-wait {
+  display: flex;
+  gap: 1rem;
+}
+
+#handCount {
+  position: fixed;
+  left: 50%;
+  bottom: 1rem;
+  font-size: 2rem;
+  width: 95vw;
+  justify-content: space-between;
+  transform: translateX(-50%);
+}
+
+#hand-1, #hand-2 {
+  opacity: 0.4;
+  transition: opacity 0.5s;
+}
+
+#hand-1.available, #hand-2.available {
+  opacity: 1;
+}
+
+#handCount-wait.available, 
+#hand-1-wait.available, 
+#hand-2-wait.available {
+  display: none;
+  transition: 1s;
+}
+
+#handCount-online {
+  display: none;
+}
+#imageContainer {
+  width: 600px;
+  height: 600px;
+  /* background: red; */
+  display: block;
+  /* clip-path: circle(80% at 50% 50%); */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  transform-origin: center;
+  clip-path: circle(0% at 50% 50%);
+  transition: 1s;
+}
+#imageContainer.available {
+  clip-path: circle(48% at 50% 50%);
+  transition: 1s;
+  z-index: 2;
+}
+.img {
+  width: 600px;
+  height: 100%;
+}
+#restart {
+  cursor: pointer;
+  &:hover {
+    color: var(--text);
+  }
+  display: none !important;
+}
+#restart.show {
+  display: block !important;
+}
+
+#instructionContainer, #loadingContainer {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: 2s;
+}
+#loadingContainer {
+  display: block;
+  clip-path: circle(80% at 50% 50%);
+}
+#loading {
+  animation: rotate360 3s linear infinite;
+  transform-origin: center;
+}
+#textPathLoading {
+  color: var(--text-light);
+  -webkit-text-fill-color: var(--text-light); /* Will override color (regardless of order) */
+  -webkit-text-stroke: 1px var(--text);
+}
+#loadingCircle {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%) scale(1.6);
+}
+#loadingContainer.modelReady {
+  display: none;
+}
+@keyframes rotate360 {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+#instruction, #loading {
+  width: 800px;
+  height: 800px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-origin: center;
+  transform: rotate(0deg);
+  color: var(--text);
+  transition: transform 1s;
+}
+
+#instruction textPath {
+  fill: var(--text);
+  -webkit-text-fill-color: var(--text); /* Will override color (regardless of order) */
+  -webkit-text-stroke: 1px var(--text-light);
+  opacity: 0.2;
+  transition: opacity 0.5s ease;
+}
+
+#instruction.rotate-1 {
+  transform: rotate(75deg);
+}
+#instruction.rotate-2 {
+  transform: rotate(-10deg);
+}
+#instruction.rotate-3 {
+  transform: rotate(-135deg);
+}
+#instruction.rotate-4 {
+  transform: rotate(150deg);
+}
+
+#instruction.rotate-1 textPath:nth-of-type(1),
+#instruction.rotate-2 textPath:nth-of-type(2),
+#instruction.rotate-3 textPath:nth-of-type(3),
+#instruction.rotate-4 textPath:nth-of-type(4) {
+  opacity: 1;
+}
+
+svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+#webcam {
+  transform: scaleX(-1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: 0;
+  filter: blur(50px);
+  opacity: 0.3;
+}
+
+#credits {
+  position: fixed;
+  font-size: 2rem;
+  width: 95vw;
+  display: flex;
+  justify-content: space-between;
+  &:hover a {
+    color: var(--text);
+  }
+}
+[data-tooltip] {
+  cursor: help;
+}
+[data-tooltip]:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  background: white;
+  font-size: 1rem;
+  color: var(--text);
+  border: 1px solid var(--text);
+  padding: 5px 8px;
+  border-radius: 4px;
+  top: 2.5rem;
+  left: 0;
+  white-space: nowrap;
+  max-width: 250px;
+  text-wrap: wrap;
+}
+
